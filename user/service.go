@@ -1,8 +1,6 @@
 package user
 
-import (
-	"github.com/google/uuid"
-)
+import "github.com/google/uuid"
 
 type Service interface {
 	FindAllUser() ([]User, error)

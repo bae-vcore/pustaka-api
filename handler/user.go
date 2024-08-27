@@ -42,7 +42,7 @@ func (h *userHandler) GetUserByID(c *gin.Context) {
 	user, err := h.userService.FindUserById(id)
 
 	if err != nil {
-		fmt.Println("error while get user id : %s", id, err)
+		fmt.Println("error while get user id : ", id, err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status":  "error",
 			"message": "something wrong",
@@ -62,19 +62,18 @@ func (h *userHandler) CreateNewUser(c *gin.Context) {
 	var user user.UserRequest
 
 	err := c.ShouldBindBodyWithJSON(&user)
-
 	if err != nil {
+
 		errMsg := []string{}
 
 		for _, e := range err.(validator.ValidationErrors) {
-			errorsMessage := fmt.Sprintf("Error on field %s, condition : %s, ", e.Field(), e.ActualTag())
-			errMsg = append(errMsg, errorsMessage)
+			erroMessage := fmt.Sprintf("Error on field %s, condition: %s", e.Field(), e.ActualTag())
+			errMsg = append(errMsg, erroMessage)
 		}
 
 		c.JSON(http.StatusBadRequest, gin.H{
 			"errors": errMsg,
 		})
-
 		return
 	}
 
@@ -82,10 +81,11 @@ func (h *userHandler) CreateNewUser(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"status":  "errorr",
+			"status":  "error",
 			"message": "error while create new user",
 			"data":    nil,
 		})
+		return
 	}
 
 	c.JSON(http.StatusCreated, gin.H{
@@ -95,4 +95,23 @@ func (h *userHandler) CreateNewUser(c *gin.Context) {
 	})
 }
 
-func (h *userHandler) DeleteUser(c *gin.Context) {}
+func (h *userHandler) DeleteUser(c *gin.Context) {
+	id := c.Param("id")
+
+	err := h.userService.DeleteUser(id)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status":  "error",
+			"message": "error while delete user",
+			"data":    nil,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  "success",
+		"message": "success delete user",
+	})
+
+}

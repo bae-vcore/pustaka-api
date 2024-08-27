@@ -50,6 +50,7 @@ func main() {
 	v1.GET("/users", userHandler.GetAllUser)
 	v1.GET("/user/:id", userHandler.GetUserByID)
 	v1.POST("/user", userHandler.CreateNewUser)
+	v1.DELETE("/user/:id", userHandler.DeleteUser)
 
 	router.Run()
 }

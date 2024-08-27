@@ -32,7 +32,7 @@ func (r *repository) FindAllUser() ([]User, error) {
 func (r *repository) FindUserById(ID string) (User, error) {
 	var user User
 
-	err := r.db.Find(&user, ID).Error
+	err := r.db.Where("id = ?", ID).First(&user).Error
 
 	return user, err
 }
@@ -44,13 +44,11 @@ func (r *repository) CreateNewUser(user User) (User, error) {
 }
 
 func (r *repository) DeleteUser(ID string) error {
-	var user User
-
-	err := r.db.Delete(&user, ID)
+	err := r.db.Where("id = ?", ID).Delete(&User{}).Error
 
 	if err != nil {
-		fmt.Println("User Not Found with ID: ", ID)
+		fmt.Println("Error user not found with ID:", ID)
 	}
 
-	return nil
+	return err
 }
